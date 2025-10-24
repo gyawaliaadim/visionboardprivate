@@ -1,114 +1,123 @@
-"use client";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
+"use client"
+import { useSession, signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useSession, signOut, signIn } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-interface NavBarProps {
-    className?: string;
-}
+import Link from "next/link";
+import { Button } from "@/components/ui/button"; // Adjust based on your component library
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"; // Adjust based on your component library
+import { useEffect, useState } from "react";
+import { useNavigation } from '@/app/store/NavigationContext';
 
-export default function NavBar({ className }: NavBarProps) {
-    const { data: session, status } = useSession();
-    const router = useRouter();
-    const pathname = usePathname();
 
-    if (status == "loading") return <div>Loading</div>
-    const pagesList=[
-        {path:"/", label:"Home"}
-        
-    ]
-    const navLinkClasses = (href: string) =>
-        `flex items-center justify-center py-2 px-3 rounded-sm transition-colors font-extrabold
-        hover:text-red-700 ${pathname === href ? "dark:text-red-400 text-red-500" : "dark:text-white text-black"}`;
+export default function Navbar({ className }: { className?: string }) {
+  const { data: session, status  } = useSession();
+//   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname(); // Replace with usePathname() if using Next.js App Router
+    const { isNavigating, navigate } = useNavigation();
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    return (
-        <nav className={`sticky top-0 z-50 flex w-full justify-around text-black dark:text-white bg-white dark:bg-black p-2 xs:p-5 shadow-2xl dark:shadow-2xl shadow-red-200 dark:shadow-gray-700 ${className}`}>
-            {/* Logo */}
-            <div>
+  const navLinks = [
+    { href: "/", name: "Home" },
+    { href: "/about", name: "About" },
+  ];
+
+  const navLinkClasses = (href: string) =>
+    `flex items-center justify-center py-2 px-3 rounded-sm transition-colors font-extrabold cursor-pointer
+     ${status === "loading" ? "text-gray-500 pointer-events-none" : `hover:text-red-700 ${pathname === href ? "dark:text-red-400 text-red-500" : "dark:text-white text-black"}`}`;
+
+  if (!mounted) return null; // Prevent SSR mismatches
+
+  return (
+    <nav
+      className={`sticky top-0 z-50 flex w-full justify-around text-black dark:text-white bg-white dark:bg-black p-2 xs:p-5 shadow-2xl dark:shadow-2xl shadow-red-200 dark:shadow-gray-700 ${className}`}
+    >
+      {/* Logo */}
+      <div>
+        <Image
+          src="/svgs/logo.svg"
+          alt="Logo"
+          width={50}
+          height={50}
+          className={`cursor-pointer ${status === "loading" ? "opacity-50 pointer-events-none" : ""}`}
+          onClick={status === "loading" || !mounted ? undefined : () => navigate("/")}
+        />
+      </div>
+
+      {/* Navigation Links */}
+      <ul className="flex w-[200px] justify-around">
+        {navLinks.map((link, index) => (
+          <li key={index}>
+            <p
+              onClick={()=>navigate(link.href)}
+              className={navLinkClasses(link.href)}
+              aria-current={pathname === link.href ? "page" : undefined}
+            >
+              {link.name}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      {/* Actions */}
+      <div className="flex items-center justify-center gap-1 xs:gap-5">
+        {status === "loading" ? (
+          <Button
+            variant="default"
+            size="lg"
+            className="text-lg font-bold bg-red-700 text-white rounded-2xl opacity-50 cursor-not-allowed"
+            disabled
+          >
+            Sign in
+          </Button>
+        ) : session && status === "authenticated" ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="rounded-full w-10 h-10 focus:ring-2 focus:ring-gray-300 cursor-pointer flex items-center justify-center bg-gray-800 overflow-hidden"
+                aria-label="User menu"
+              >
                 <Image
-                    src="/svgs/logo.svg"
-                    alt="Logo"
-                    width={50}
-                    height={50}
-                    className="cursor-pointer"
-                    onClick={() => router.push("/")}
+                  src={session?.user?.image || "https://avatars.githubusercontent.com/u/110762518?v=4&size=64"}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="rounded-full object-cover"
                 />
-            </div>
-
-            {/* Navigation Links */}
-            <ul className="flex w-[200px] justify-around">
-                <li>
-                    <Link href="/" className={navLinkClasses("/")} aria-current={pathname === "/" ? "page" : undefined}>
-                        Home
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/about" className={navLinkClasses("/about")} aria-current={pathname === "/about" ? "page" : undefined}>
-                        About
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/demo" className={navLinkClasses("/demo")} aria-current={pathname === "/demo" ? "page" : undefined}>
-                        Demo
-                    </Link>
-                </li>
-            </ul>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <div className="rounded-full w-[40px] h-[40px] focus:ring-4 focus:ring-gray-300 cursor-pointer flex text-sm bg-gray-800 ">
-                        <Image
-                            // src={profilePic}
-                            src={"https://avatars.githubusercontent.com/u/110762518?v=4&size=64"}
-                            alt="Profile"
-                            width={40}
-                            height={40}
-                            className="rounded-full"
-                        />
-                    </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel >
-                        <div className="flex flex-col">
-                            <div className="text-2xl font-extrabold">
-
-                                {session?.user?.name}
-                            </div>
-                            <div className="text-gray-600 ">
-
-                                {session?.user?.email}
-                            </div>
-                        </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <DropdownMenuItem>Sign out</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Actions */}
-            <div className="flex items-center justify-center gap-1 xs:gap-5">
-                {session && status == "authenticated" ? (<div></div>
-
-                ) : (
-                    <Button
-                        variant="default"
-                        size="lg"
-                        className="text-lg font-bold bg-red-700 text-white rounded-2xl hover:bg-red-800 cursor-pointer"
-                    >
-                        Sign in
-                    </Button>
-
-                )}
-            </div>
-        </nav>
-    );
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="flex flex-col gap-1">
+                <span className="text-lg font-bold">{session?.user?.name}</span>
+                <span className="text-sm text-gray-500 truncate">{session?.user?.email}</span>
+              </DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => console.log("Go to settings")}>
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => signOut()}>
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button
+            variant="default"
+            size="lg"
+            className="text-lg font-bold bg-red-700 text-white rounded-2xl hover:bg-red-800 cursor-pointer"
+            onClick={() => navigate("/signin")}
+          >
+            Sign in
+          </Button>
+        )}
+      </div>
+    </nav>
+  );
 }
