@@ -23,7 +23,10 @@ export default function NavBar({ className }: NavBarProps) {
     const pathname = usePathname();
 
     if (status == "loading") return <div>Loading</div>
-
+    const pagesList=[
+        {path:"/", label:"Home"}
+        
+    ]
     const navLinkClasses = (href: string) =>
         `flex items-center justify-center py-2 px-3 rounded-sm transition-colors font-extrabold
         hover:text-red-700 ${pathname === href ? "dark:text-red-400 text-red-500" : "dark:text-white text-black"}`;
@@ -33,7 +36,7 @@ export default function NavBar({ className }: NavBarProps) {
             {/* Logo */}
             <div>
                 <Image
-                    src="/logo.svg"
+                    src="/svgs/logo.svg"
                     alt="Logo"
                     width={50}
                     height={50}
