@@ -2,7 +2,6 @@
 import { useSession, signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button"; // Adjust based on your component library
 import {
   DropdownMenu,
@@ -11,19 +10,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"; // Adjust based on your component library
-import { useEffect, useState } from "react";
 import { useNavigation } from '@/app/store/NavigationContext';
-
+import { useTheme } from "next-themes";
 
 export default function Navbar({ className }: { className?: string }) {
   const { data: session, status  } = useSession();
+    const { theme, setTheme } = useTheme();
 //   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname(); // Replace with usePathname() if using Next.js App Router
     const { isNavigating, navigate } = useNavigation();
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   const navLinks = [
     { href: "/", name: "Home" },
@@ -33,8 +32,6 @@ export default function Navbar({ className }: { className?: string }) {
   const navLinkClasses = (href: string) =>
     `flex items-center justify-center py-2 px-3 rounded-sm transition-colors font-extrabold cursor-pointer
      ${status === "loading" ? "text-gray-500 pointer-events-none" : `hover:text-red-700 ${pathname === href ? "dark:text-red-400 text-red-500" : "dark:text-white text-black"}`}`;
-
-  if (!mounted) return null; // Prevent SSR mismatches
 
   return (
     <nav
@@ -48,7 +45,7 @@ export default function Navbar({ className }: { className?: string }) {
           width={50}
           height={50}
           className={`cursor-pointer ${status === "loading" ? "opacity-50 pointer-events-none" : ""}`}
-          onClick={status === "loading" || !mounted ? undefined : () => navigate("/")}
+          onClick={status === "loading" ? undefined : () => navigate("/")}
         />
       </div>
 
@@ -117,6 +114,18 @@ export default function Navbar({ className }: { className?: string }) {
             Sign in
           </Button>
         )}
+            <button
+      onClick={toggleTheme}
+      className="p-2 rounded-full cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
+      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+    >
+      <Image
+        src={theme === 'dark' ? '/svgs/light_theme.svg' : '/svgs/dark_theme.svg'}
+        alt={theme === 'dark' ? 'Light mode icon' : 'Dark mode icon'}
+        width={24}
+        height={24}
+      />
+    </button>
       </div>
     </nav>
   );

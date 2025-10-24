@@ -16,7 +16,7 @@ export function Loading({ children }: { children: ReactNode }) {
 
     return (
         (status === "loading" || isNavigating) ? (
-            <div className='flex justify-center items-center w-full h-screen gap-5'>
+            <div className='flex justify-center items-center w-full h-screen gap-5 cursor-progress'>
 
                 <div className="animate-spin rounded-full h-6 w-6 border-t-3 border-b-3 border-gray-300"></div>
                 <div className='text-2xl text-black dark:text-white'>Loading</div>
