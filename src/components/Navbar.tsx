@@ -1,8 +1,10 @@
 "use client"
 import { useSession, signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useEffectEvent, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button"; // Adjust based on your component library
+import clsx from "clsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,16 +12,28 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"; // Adjust based on your component library
-import { useNavigation } from '@/app/store/NavigationContext';
+import { useNavigation } from '@/store/NavigationContext';
 import { useTheme } from "next-themes";
 
 export default function Navbar({ className }: { className?: string }) {
   const { data: session, status  } = useSession();
     const { theme, setTheme } = useTheme();
+    const [themeUrl, setThemeUrl] = useState<string | null>(null)
 //   const router = useRouter();
   const pathname = usePathname(); // Replace with usePathname() if using Next.js App Router
     const { isNavigating, navigate } = useNavigation();
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+    if (theme=="light"){
+      setThemeUrl("/svgs/dark_theme.svg")
+    }
+    else{
+      setThemeUrl("/svgs/light_theme.svg")
 
+    }
+  }, [theme])
+  if (!mounted) return null
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
@@ -114,18 +128,28 @@ export default function Navbar({ className }: { className?: string }) {
             Sign in
           </Button>
         )}
-            <button
-      onClick={toggleTheme}
-      className="p-2 rounded-full cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
-      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-    >
-      <Image
-        src={theme === 'dark' ? '/svgs/light_theme.svg' : '/svgs/dark_theme.svg'}
-        alt={theme === 'dark' ? 'Light mode icon' : 'Dark mode icon'}
-        width={24}
-        height={24}
-      />
-    </button>
+   <button
+  onClick={toggleTheme}
+  className={clsx(
+    'p-2 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 cursor-pointer dark:hover:bg-gray-700 transition-colors',
+    {
+      'invisible': status === 'loading',
+    }
+  )}
+  aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+  disabled={status === 'loading'}
+>
+  {themeUrl?
+
+    <Image
+    src={themeUrl}
+    alt={theme === 'dark' ? 'Light mode icon' : 'Dark mode icon'}
+    width={24}
+    height={24}
+    />:
+    null
+  }
+</button>
       </div>
     </nav>
   );

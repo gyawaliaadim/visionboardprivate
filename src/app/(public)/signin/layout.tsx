@@ -1,9 +1,7 @@
-
 import type { Metadata } from "next";
 export const metadata: Metadata = {
-  title: 'Dashboard',
+  title: 'About me',
 };
-
 
 export default function Layout({
   children,
@@ -11,10 +9,6 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-col min-h-screen">
-       {children}
-      
-    </div>
-
-  );
+    <>{children}</>
+  )
 }

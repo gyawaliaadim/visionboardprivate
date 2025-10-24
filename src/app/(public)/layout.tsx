@@ -1,5 +1,5 @@
 import NavBar from "@/components/Navbar";
-
+import Footer from "@/components/Footer";
 import { Loading } from "@/components/Loading";
 export default function Layout({
   children,
@@ -14,6 +14,7 @@ export default function Layout({
       <Loading>
 
        {children}
+      <Footer/>
       </Loading>
       </div>
       

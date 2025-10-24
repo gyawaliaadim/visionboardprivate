@@ -9,7 +9,7 @@ const Home = () => {
   
 
   return (
-    <div>Home
+    <div className=" flex justify-center items-center min-h-screen  w-full bg-[url('/svgs/background.svg')] bg-repeat bg-contain ">Home
       <Button onClick={() => setTheme("light")}>Light</Button>
       <Button onClick={() => setTheme("dark")}>Dark</Button>
     </div>

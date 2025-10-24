@@ -4,9 +4,9 @@ import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from "react";
 import Image from "next/image";
-import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { useNavigation } from '@/app/store/NavigationContext';
+import { useNavigation } from '@/store/NavigationContext';
+
 
 const SignIn = () => {
   const { data: session, status } = useSession()
@@ -21,7 +21,7 @@ const SignIn = () => {
 
   return (
     <>
-      <div className=" bg-[url('/assets/background.svg')] bg-repeat bg-contain flex flex-col items-center justify-center min-h-screen p-4  text-gray-800 dark:text-gray-200">
+      <div className="w-full bg-[url('/svgs/background.svg')] bg-repeat bg-contain flex flex-col items-center justify-center min-h-screen p-4  text-gray-800 dark:text-gray-200">
         <section className="flex-col justify-center items-center xs:justify-around xs:flex-row  flex max-w-3xl w-full p-8 space-y-8 text-center  bg-gray-200 dark:bg-gray-800 rounded-2xl shadow-xl 
         ">
           <div className='flex flex-col'>
@@ -45,8 +45,10 @@ const SignIn = () => {
                 src={resolvedTheme=="light"?`/svgs/signIn_light.png`:`/svgs/signIn_dark.png`}
                 fill
                 objectFit="contain" // preserve aspect ratio, no distortion
-                sizes="100%"  // optional, helps optimize srcset
+              // optional, helps optimize srcset
                 onClick={() => signIn()}
+                fetchPriority='high'
+                loading="lazy"
               />
             </div>
         

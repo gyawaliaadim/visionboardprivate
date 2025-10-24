@@ -1,5 +1,5 @@
+"use client"
 import React from "react";
-import Image from "next/image";
 
 const About = () => {
   const iconClasses =
@@ -7,7 +7,7 @@ const About = () => {
 
   return (
     <>
-      <div className=" bg-[url('/svgs/background.svg')] bg-repeat bg-contain flex flex-col items-center justify-center min-h-screen p-4 bg-white dark:bg-black text-gray-800 dark:text-gray-200">
+      <div className="w-full bg-[url('/svgs/background.svg')] bg-repeat bg-contain flex flex-col items-center justify-center min-h-screen p-4 bg-white dark:bg-black text-gray-800 dark:text-gray-200">
         <section className="max-w-3xl w-full p-8 space-y-8 text-center bg-gray-200 dark:bg-gray-800 rounded-2xl shadow-xl transition-transform duration-300 transform hover:scale-105">
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-black  dark:text-white">
             Hello! I'm Aadim Gyawali.
