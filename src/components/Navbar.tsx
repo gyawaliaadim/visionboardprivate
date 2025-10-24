@@ -1,10 +1,18 @@
 "use client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 interface NavBarProps {
     className?: string;
 }
@@ -43,7 +51,7 @@ export default function NavBar({ className }: NavBarProps) {
             <ul className="flex w-[200px] justify-around">
                 <li>
                     <Link href="/" className={navLinkClasses("/")} aria-current={pathname === "/" ? "page" : undefined}>
-                        Home
+                        -=_=
                     </Link>
                 </li>
                 <li>
@@ -77,7 +85,7 @@ export default function NavBar({ className }: NavBarProps) {
                             />
                         </button>
 
-                        {dropdownOpen && (
+                        {/* {dropdownOpen && (
                             <div className="absolute right-0 top-12 z-50 text-base list-none bg-white text-black divide-y divide-gray-100 rounded-lg shadow-lg">
                                 <div className="px-4 py-3 w-full">
                                     <span className="block text-sm font-semibold">{profileName}</span>
@@ -99,7 +107,19 @@ export default function NavBar({ className }: NavBarProps) {
                                     </li>
                                 </ul>
                             </div>
-                        )}
+                        )} */}
+                        <DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline">Open Menu</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="end">
+    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem>Settings</DropdownMenuItem>
+    <DropdownMenuItem>Log out</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
                     </div>
                 ) : (
                     <button
