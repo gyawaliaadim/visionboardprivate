@@ -10,7 +10,7 @@ export function Provider({ children }: { children: ReactNode }) {
       attribute="class"
       defaultTheme="system"
       enableSystem
-      disableTransitionOnChange
+      // disableTransitionOnChange
     >
       <SessionProvider>
 
