@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = {
-  title: 'About me',
+  title: 'Sign in',
 };
 
 export default function Layout({

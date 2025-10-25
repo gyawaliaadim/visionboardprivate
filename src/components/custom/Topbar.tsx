@@ -15,7 +15,7 @@ import {
 import { useNavigation } from '@/store/NavigationContext';
 import { useTheme } from "next-themes";
 
-export default function Navbar({ className }: { className?: string }) {
+export default function Topbar({ className }: { className?: string }) {
   const { data: session, status  } = useSession();
     const { theme, setTheme } = useTheme();
     const [themeUrl, setThemeUrl] = useState<string | null>(null)
@@ -49,7 +49,7 @@ export default function Navbar({ className }: { className?: string }) {
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex w-full justify-around text-black dark:text-white bg-white dark:bg-black p-2 xs:p-5 shadow-2xl dark:shadow-2xl shadow-red-200 dark:shadow-gray-700 ${className}`}
+      className={`h-20 sticky top-0 z-50 flex w-full justify-around text-black dark:text-white bg-white dark:bg-black p-2 xs:p-5 shadow-2xl dark:shadow-2xl shadow-red-200 dark:shadow-gray-700 ${className}`}
     >
       {/* Logo */}
       <div>
@@ -66,7 +66,7 @@ export default function Navbar({ className }: { className?: string }) {
       {/* Navigation Links */}
       <ul className="flex w-[200px] justify-around">
         {navLinks.map((link, index) => (
-          <li key={index}>
+          <li key={index}  className="flex justify-center items-center">
             <p
               onClick={()=>navigate(link.href)}
               className={navLinkClasses(link.href)}
@@ -110,10 +110,10 @@ export default function Navbar({ className }: { className?: string }) {
                 <span className="text-lg font-bold">{session?.user?.name}</span>
                 <span className="text-sm text-gray-500 truncate">{session?.user?.email}</span>
               </DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => console.log("Go to settings")}>
+              <DropdownMenuItem className="cursor-pointer"  onClick={()=>navigate("/dashboard/settings")}>
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => signOut()}>
+              <DropdownMenuItem  className="cursor-pointer" onClick={() => signOut()}>
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>

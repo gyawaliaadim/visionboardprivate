@@ -1,24 +1,28 @@
-import NavBar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { Loading } from "@/components/Loading";
+import Topbar from "@/components/custom/Topbar";
+import Footer from "@/components/custom/Footer";
+import LoadingTemplate from "@/components/custom/Loading";
+import Loading from "@/app/(public)/loading"
+import { Suspense } from "react";
 export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
+    <Suspense fallback={<Loading/>}>
     <div className="flex flex-col  min-h-screen w-full ">
-      <NavBar  />
+      <Topbar  />
 
       <div className="flex justify-center items-center h-full w-full">
-      <Loading>
+      <LoadingTemplate>
 
        {children}
       <Footer/>
-      </Loading>
+      </LoadingTemplate>
       </div>
       
     </div>
+    </Suspense>
 
   );
 }

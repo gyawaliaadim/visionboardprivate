@@ -9,14 +9,16 @@ import { useNavigation } from '@/store/NavigationContext';
 
 
 const SignIn = () => {
+
   const { data: session, status } = useSession()
   const router = useRouter();
-  const {navigate} =useNavigation()
+  const { navigate } = useNavigation()
   useEffect(() => {
     if (status == "authenticated" && session) {
       navigate("/dashboard")
     }
   }, [status, router])
+
   const { resolvedTheme, setTheme } = useTheme()
 
   return (
@@ -42,16 +44,16 @@ const SignIn = () => {
                 className="drop-shadow-2xl
               cursor-pointer"
                 alt="GitHub SignIn Button"
-                src={resolvedTheme=="light"?`/svgs/signIn_light.png`:`/svgs/signIn_dark.png`}
+                src={resolvedTheme == "light" ? `/svgs/signIn_light.png` : `/svgs/signIn_dark.png`}
                 fill
                 objectFit="contain" // preserve aspect ratio, no distortion
-              // optional, helps optimize srcset
+                // optional, helps optimize srcset
                 onClick={() => signIn()}
                 fetchPriority='high'
                 loading="lazy"
               />
             </div>
-        
+
             {/* Social Links */}
           </div>
         </section>
