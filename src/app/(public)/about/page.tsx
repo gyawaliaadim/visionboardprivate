@@ -18,7 +18,7 @@ const About = () => {
             user-friendly applications.
           </p>
 
-          <p className="text-md sm:text-lg leading-relaxed text-gray-900 dark:text-gray-300">
+          <p className="text-base sm:text-lg leading-relaxed text-gray-900 dark:text-gray-300">
             I create web applications and mobile apps. My journey in development
             is filled with curiosity for new technologies and a commitment to
             writing clean, efficient code. I enjoy the entire process of bringing

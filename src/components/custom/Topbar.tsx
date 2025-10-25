@@ -108,8 +108,11 @@ export default function Topbar({ className }: { className?: string }) {
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="flex flex-col gap-1">
                 <span className="text-lg font-bold">{session?.user?.name}</span>
-                <span className="text-sm text-gray-500 truncate">{session?.user?.email}</span>
+                <span className="text-base text-gray-500 truncate">{session?.user?.email}</span>
               </DropdownMenuLabel>
+              <DropdownMenuItem className="cursor-pointer"  onClick={()=>navigate("/dashboard")}>
+                Dashboard
+              </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer"  onClick={()=>navigate("/dashboard/settings")}>
                 Settings
               </DropdownMenuItem>
