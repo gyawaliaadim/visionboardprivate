@@ -17,7 +17,7 @@ export default function LoadingTemplate({ children }: { children: ReactNode }) {
   const showOverlay = status === "loading" || isNavigating;
 
   return (
-    <div className="relative flex flex-col w-full min-h-screen justify-center items-center">
+    <div className="relative flex flex-col w-full min-h-screen ">
       {/* Main content */}
       {children}
 
@@ -25,8 +25,8 @@ export default function LoadingTemplate({ children }: { children: ReactNode }) {
       <div
         className={`fixed inset-0 flex items-center justify-center transition-opacity duration-300 ${
           showOverlay
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+            ? "opacity-50 pointer-events-auto"
+            : "hidden"
         } bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50`}
       >
         <div className="relative flex flex-col items-center">

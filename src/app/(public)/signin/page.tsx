@@ -33,7 +33,7 @@ const SignIn = () => {
             </h1>
 
             <p className="text-lg sm:text-xl font-medium text-gray-900 dark:text-gray-400">
-              Sign in to continue
+              Sign in to save your projects!
             </p>
 
           </div>

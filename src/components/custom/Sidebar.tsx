@@ -1,0 +1,143 @@
+"use client";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { FiHome, FiShoppingCart, FiFolder, FiSettings, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useNavigation } from "@/store/NavigationContext";
+import clsx from "clsx";
+type SidebarProps = {
+  storageKey?: string;
+};
+
+export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProps) {
+  const [open, setOpen] = useState<boolean>(true);
+  const { navigate } = useNavigation();
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw !== null) setOpen(raw === "true");
+    } catch {}
+  }, [storageKey]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, String(open));
+    } catch {}
+  }, [open, storageKey]);
+
+  const projects = [
+    "Project Atlas", "Redesign Website", "Mobile App MVP", "Experiment 4",
+    "Internal Tools", "Customer Portal", "Data Pipeline"
+  ];
+
+  return (
+    <aside
+      className={`flex flex-col bg-white dark:bg-black text-black dark:text-white border-r border-red-900/60 dark:border-red-500/10 transition-all duration-300 ease-in-out ${open ? "w-64" : "w-16"} h-screen`}
+      aria-expanded={open}
+    >
+      {/* Top Section */}
+      <div className={clsx(`flex items-center px-3 py-3 h-14 shrink-0`,
+        {
+          'justify-between':open,
+          'justify-center':!open
+        }
+      )}>
+              {open &&
+        <div className=" flex jsutify-center items-center p-4 cursor-pointer">
+        <div className="flex items-center gap-2"
+        onClick={()=>navigate('/')}>
+              <Image
+                src="/svgs/logo.svg"
+                alt="Logo"
+                width={30}
+                height={30}
+                className={`cursor-pointer ${status === "loading" ? "opacity-50 pointer-events-none" : ""}`}
+                onClick={status === "loading" ? undefined : () => navigate("/")}
+              />
+       <div className="leading-5 text-lg font-semibold select-none">Vision Board</div>
+          </div>
+        </div>
+       }
+
+
+
+
+
+
+
+
+
+        
+        <div className="flex items-center gap-2">
+          <button
+            aria-label={open ? "Close sidebar" : "Open sidebar"}
+            onClick={() => setOpen(prev => !prev)}
+            className="p-1 rounded-md cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors"
+          >
+            {open ? <FiChevronLeft size={18} /> : <FiChevronRight size={18} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Navigation Links */}
+      <nav className="px-2 flex-shrink-0">
+        <ul className="space-y-1">
+          <li>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className={`flex items-center gap-3 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors w-full cursor-pointer ${open ? "" : "justify-center"}`}
+            >
+              <FiHome size={18} />
+              {open && <span className="truncate">Dashboard</span>}
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => navigate("/dashboard/store")}
+              className={`flex items-center gap-3 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors cursor-pointer w-full ${open ? "" : "justify-center"}`}
+            >
+              <FiShoppingCart size={18} />
+              {open && <span className="truncate">Store</span>}
+            </button>
+          </li>
+          <li>
+            <div className=" border-t my-2 border-red-600/10 dark:border-red-500/10" />
+          </li>
+        </ul>
+      </nav>
+
+      {/* Projects Section */}
+      <div className="flex-1 overflow-y-auto px-2">
+        <div className={`mt-2 flex items-center gap-3 text-sm font-medium text-red-600/90 ${open ? "" : "justify-center"}`}>
+          <FiFolder size={18} />
+          {open && <span>Projects</span>}
+        </div>
+        <ul className="mt-2 flex flex-col gap-1">
+          {projects.map((project, index) => (
+            <li key={index}>
+              <button
+                onClick={() => console.debug("Select project:", project)}
+                className={`w-full text-left rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors flex items-center gap-3 ${open ? "" : "justify-center"}`}
+                title={open ? undefined : project}
+              >
+                <div className="w-2 h-2 rounded-full bg-red-600/80" />
+                {open && <span className="truncate">{project}</span>}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Settings Section */}
+      <div className="shrink-0 border-t border-red-600/10 w-full flex p-5 justify-center items-center dark:border-red-500/10">
+        <button
+          onClick={() => navigate("/dashboard/settings")}
+          className={`flex items-center gap-3 rounded-2xl cursor-pointer px-2 py-3 w-full hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors ${open ? "" : "justify-center"}`}
+        >
+          <FiSettings size={18} />
+          {open && <span>Settings</span>}
+        </button>
+      </div>
+    </aside>
+  );
+}
