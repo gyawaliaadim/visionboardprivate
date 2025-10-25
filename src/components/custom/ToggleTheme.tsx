@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { useTheme } from "next-themes";
 
-const ToggleTheme = () => {
+const ToggleTheme = ({ width, padding,className }: { width?: number; padding?: 1|2;className?:string }) => {
+  // your component logic here
+
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false)
     const [themeUrl, setThemeUrl] = useState<string | null>(null)
@@ -26,9 +28,11 @@ const ToggleTheme = () => {
         <button
             onClick={toggleTheme}
             className={clsx(
-                'p-2 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 cursor-pointer dark:hover:bg-gray-700 transition-colors',
+                `rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 cursor-pointer dark:hover:bg-gray-700 transition-colors ${className}`,
                 {
                     'invisible': status === 'loading',
+                    'p-1':padding==1,
+                    'p-2':padding==2
                 }
             )}
             aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
@@ -39,8 +43,9 @@ const ToggleTheme = () => {
                 <Image
                     src={themeUrl}
                     alt={theme === 'dark' ? 'Light mode icon' : 'Dark mode icon'}
-                    width={24}
-                    height={24}
+                    width={width?width:24}
+                    height={width?width:24}
+
                 /> :
                 null
             }

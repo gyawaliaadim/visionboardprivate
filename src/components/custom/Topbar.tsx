@@ -116,7 +116,7 @@ export default function Topbar({ className }: { className?: string }) {
             Sign in
           </Button>
         )}
-  <ToggleTheme/>
+  <ToggleTheme padding={2}/>
       </div>
     </nav>
   );

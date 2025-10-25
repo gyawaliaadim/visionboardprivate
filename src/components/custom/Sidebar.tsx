@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { FiHome, FiShoppingCart, FiFolder, FiSettings, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useNavigation } from "@/store/NavigationContext";
 import clsx from "clsx";
+import ToggleTheme from "./ToggleTheme";
 type SidebarProps = {
   storageKey?: string;
 };
@@ -31,8 +32,9 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
   ];
 
   return (
+    <div className="transition-all duration-200">
     <aside
-      className={`flex flex-col bg-white dark:bg-black text-black dark:text-white border-r border-red-900/60 dark:border-red-500/10 transition-all duration-300 ease-in-out ${open ? "w-64" : "w-16"} h-screen`}
+      className={`transition-all duration-300 flex flex-col bg-white dark:bg-black text-black dark:text-white border-r border-red-900/60 dark:border-red-500/10 ease-in ${open ? "w-64" : "w-16"} h-screen`}
       aria-expanded={open}
     >
       {/* Top Section */}
@@ -43,7 +45,7 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
         }
       )}>
               {open &&
-        <div className=" flex jsutify-center items-center p-4 cursor-pointer">
+        <div className=" flex jsutify-center items-center pt-4 pb-4 cursor-pointer">
         <div className="flex items-center gap-2"
         onClick={()=>navigate('/')}>
               <Image
@@ -72,7 +74,7 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
           <button
             aria-label={open ? "Close sidebar" : "Open sidebar"}
             onClick={() => setOpen(prev => !prev)}
-            className="p-1 rounded-md cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors"
+            className="p-1 rounded-md cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/50"
           >
             {open ? <FiChevronLeft size={18} /> : <FiChevronRight size={18} />}
           </button>
@@ -82,10 +84,22 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
       {/* Navigation Links */}
       <nav className="px-2 flex-shrink-0">
         <ul className="space-y-1">
+          <li className={clsx("flex justify-center items-center gap-2",
+          {
+            'justify-start':open,
+            'justify-center':!open
+          })
+          }>
+            <div className=" px-2">
+
+<ToggleTheme padding={1} width={18} className={""}/>{open&&<> Theme</>}
+            </div>
+
+            </li>
           <li>
             <button
               onClick={() => navigate("/dashboard")}
-              className={`flex items-center gap-3 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors w-full cursor-pointer ${open ? "" : "justify-center"}`}
+              className={`flex items-center gap-3 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50  w-full cursor-pointer ${open ? "" : "justify-center"}`}
             >
               <FiHome size={18} />
               {open && <span className="truncate">Dashboard</span>}
@@ -94,7 +108,7 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
           <li>
             <button
               onClick={() => navigate("/dashboard/store")}
-              className={`flex items-center gap-3 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors cursor-pointer w-full ${open ? "" : "justify-center"}`}
+              className={`flex items-center gap-3 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 cursor-pointer w-full ${open ? "" : "justify-center"}`}
             >
               <FiShoppingCart size={18} />
               {open && <span className="truncate">Store</span>}
@@ -114,10 +128,10 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
         </div>
         <ul className="mt-2 flex flex-col gap-1">
           {projects.map((project, index) => (
-            <li key={index}>
+            <li key={index} >
               <button
                 onClick={() => console.debug("Select project:", project)}
-                className={`w-full text-left rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors flex items-center gap-3 ${open ? "" : "justify-center"}`}
+                className={`w-full text-left cursor-pointer rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 flex items-center gap-3 ${open ? "" : "justify-center"}`}
                 title={open ? undefined : project}
               >
                 <div className="w-2 h-2 rounded-full bg-red-600/80" />
@@ -132,12 +146,13 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
       <div className="shrink-0 border-t border-red-600/10 w-full flex p-5 justify-center items-center dark:border-red-500/10">
         <button
           onClick={() => navigate("/dashboard/settings")}
-          className={`flex items-center gap-3 rounded-2xl cursor-pointer px-2 py-3 w-full hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors ${open ? "" : "justify-center"}`}
+          className={`flex items-center gap-3 rounded-2xl cursor-pointer px-2 py-3 w-full hover:bg-red-50 dark:hover:bg-red-900/50  ${open ? "" : "justify-center"}`}
         >
           <FiSettings size={18} />
           {open && <span>Settings</span>}
         </button>
       </div>
     </aside>
+    </div>
   );
 }
