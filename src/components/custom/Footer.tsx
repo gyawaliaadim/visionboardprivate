@@ -1,14 +1,28 @@
 "use client";
 import React from 'react'
 import Link from 'next/link'
+import { useNavigation } from '@/store/NavigationContext';
 
 const Footer = () => {
+    const { navigate } = useNavigation()
     return (
         <footer className="flex w-full text-black dark:text-white mt-5  border-t-gray-700 border-t-2">
             <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
                 <div className="sm:flex sm:items-center sm:justify-between">
-                    <span className="text-sm text-black dark:text-white sm:text-center">© 2025 <Link href="#" className="hover:underline">Vision Board</Link>. All Rights Reserved.
-                    </span>
+                    <div className=''>
+                        <div className='flex gap-2'>
+
+                            <span className=" text-black dark:text-white sm:text-center">© 2025
+                            </span>
+                            <span onClick={() => navigate('/')}
+                                className="hover:underline cursor-pointer">
+                                Vision Board</span>
+                        </div>
+
+                        <span>
+                            All Rights Reserved.
+                        </span>
+                    </div>
                     <div className="flex mt-4 sm:justify-center sm:mt-0">
                         <Link target="_blank" href="https://github.com/gyawaliaadim" className="text-black dark:text-white dark:hover:text-gray-500 hover:text-gray-800 ms-5 hover:scale-110 transition-transform duration-200">
                             <svg className="w-8 h-8" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
