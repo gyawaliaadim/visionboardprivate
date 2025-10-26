@@ -107,11 +107,11 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
           </li>
           <li>
             <button
-              onClick={() => navigate("/dashboard/store")}
+              onClick={() => navigate("/dashboard/rewards")}
               className={`flex items-center gap-3 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900/50 cursor-pointer w-full ${open ? "" : "justify-center"}`}
             >
               <FiShoppingCart size={18} />
-              {open && <span className="truncate">Store</span>}
+              {open && <span className="truncate">Rewards</span>}
             </button>
           </li>
           <li>
