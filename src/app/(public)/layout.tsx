@@ -1,6 +1,6 @@
 import Topbar from "@/components/custom/Topbar";
 import Footer from "@/components/custom/Footer";
-import Loading from "@/app/(public)/loading"
+import Loading from "@/app/loading"
 import { Suspense } from "react";
 export default function Layout({
   children,
@@ -8,7 +8,6 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <Suspense fallback={<Loading/>}>
     <div className="flex flex-col  min-h-screen w-full ">
       <Topbar  />
 
@@ -18,7 +17,6 @@ export default function Layout({
       </div>
       
     </div>
-    </Suspense>
 
   );
 }
