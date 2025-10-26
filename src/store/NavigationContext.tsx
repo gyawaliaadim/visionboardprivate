@@ -26,7 +26,7 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
     if (isNavigating && pathname === route) {
       setIsNavigating(false);
     }
-  }, [pathname, isNavigating, router]);
+  }, [pathname, isNavigating, router, route]);
 
   return (
     <NavigationContext.Provider value={{ isNavigating, navigate }}>

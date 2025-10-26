@@ -1,25 +1,31 @@
 "use client"
 
 import { useSession, signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation';
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useTheme } from 'next-themes';
 import { useNavigation } from '@/store/NavigationContext';
-
+import { Button } from '@/components/ui/button';
 
 const SignIn = () => {
 
   const { data: session, status } = useSession()
-  const router = useRouter();
   const { navigate } = useNavigation()
+
+
   useEffect(() => {
-    if (status == "authenticated" && session) {
+    if (status=="loading" || !session) return 
+    else if (status==="authenticated"){
       navigate("/dashboard")
     }
-  }, [status, router])
+   
+  }, [navigate,session,status]);
 
-  const { resolvedTheme, setTheme } = useTheme()
+
+
+
+  
+  const { resolvedTheme } = useTheme()
 
   return (
     <>
@@ -46,20 +52,19 @@ const SignIn = () => {
                 alt="GitHub SignIn Button"
                 src={resolvedTheme == "light" ? `/svgs/signIn_light.png` : `/svgs/signIn_dark.png`}
                 fill
-                objectFit="contain" // preserve aspect ratio, no distortion
-                // optional, helps optimize srcset
+                objectFit="contain"
                 onClick={() => signIn()}
                 fetchPriority='high'
                 loading="lazy"
               />
             </div>
-
+<Button onClick={()=> console.log(session?.user.id)}>click</Button>
             {/* Social Links */}
           </div>
         </section>
       </div>
     </>
   );
-};
+}
 
 export default SignIn;

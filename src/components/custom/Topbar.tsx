@@ -2,7 +2,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Button } from "@/components/ui/button"; // Adjust based on your component library
+import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
@@ -10,15 +10,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"; // Adjust based on your component library
+} from "@/components/ui/dropdown-menu"; 
 import { useNavigation } from '@/store/NavigationContext';
 import ToggleTheme from "./ToggleTheme";
 
 export default function Topbar({ className }: { className?: string }) {
   const { data: session, status  } = useSession();
-//   const router = useRouter();
-  const pathname = usePathname(); // Replace with usePathname() if using Next.js App Router
-    const { isNavigating, navigate } = useNavigation();
+  const pathname = usePathname();
+    const { navigate } = useNavigation();
 
 
 

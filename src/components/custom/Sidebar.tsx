@@ -32,7 +32,6 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
   ];
 
   return (
-    <div className="transition-all duration-200">
     <aside
       className={`transition-all duration-300 flex flex-col bg-white dark:bg-black text-black dark:text-white border-r border-red-900/60 dark:border-red-500/10 ease-in ${open ? "w-64" : "w-16"} h-screen`}
       aria-expanded={open}
@@ -82,7 +81,7 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
       </div>
 
       {/* Navigation Links */}
-      <nav className="px-2 flex-shrink-0">
+      <nav className="px-2 shrink-0">
         <ul className="space-y-1">
           <li className={clsx("flex justify-center items-center gap-2",
           {
@@ -153,6 +152,5 @@ export default function Sidebar({ storageKey = "app.sidebar.open" }: SidebarProp
         </button>
       </div>
     </aside>
-    </div>
   );
 }

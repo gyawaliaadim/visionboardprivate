@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 const API = () => {
   return (
-    <div>Sorry, this page isn't meant to be accessed through GET Request.</div>
+    <div>{`Sorry, this page isn't meant to be accessed through GET Request.`}</div>
   )
 }
 

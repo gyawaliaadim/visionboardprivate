@@ -5,7 +5,6 @@ import clsx from "clsx";
 import { useTheme } from "next-themes";
 
 const ToggleTheme = ({ width, padding,className }: { width?: number; padding?: 1|2;className?:string }) => {
-  // your component logic here
 
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false)
