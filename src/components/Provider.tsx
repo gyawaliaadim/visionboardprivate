@@ -9,15 +9,12 @@ import {
   QueryClientProvider,
   useQuery,
 } from '@tanstack/react-query'
-import Loading from "@/app/loading";
 import { Suspense } from "react";
 export function Provider({ children }: { children: ReactNode }) {
 
   const queryClient = new QueryClient()
 
   return (
-
-    <Suspense fallback={<Loading/>}>
 
     <QueryClientProvider client={queryClient}>
       <NextThemesProvider
@@ -34,6 +31,5 @@ export function Provider({ children }: { children: ReactNode }) {
         </SessionProvider>
       </NextThemesProvider>
     </QueryClientProvider>
-    </Suspense>
   );
 }

@@ -60,7 +60,7 @@ export async function PUT(request: NextRequest) {
 // Delete a project by ID
 export async function DELETE(request: NextRequest) {
   const { id } = await request.json();
-
+  console.log("hello")
   if (!id) {
     return createError("Project ID is required", 400);
   }
