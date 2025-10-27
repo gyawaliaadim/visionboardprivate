@@ -4,16 +4,7 @@ import clsx from "clsx";
 import TodoItem from "./TodoItem";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
-
-interface Todo {
-  id: string;
-  position: number;
-  title: string;
-  description?: string;
-  completed: boolean;
-  xpReward: number;
-}
-
+import { Todo } from "@/types/models";
 interface BoardItemProps {
   title: string;
   position: number;
@@ -38,7 +29,7 @@ export default function BoardItem({
   return (
     <div
       className={clsx(
-        "w-[320px] p-4 rounded-xl shadow-lg",
+        "w-[320px] p-4 rounded-xl shadow-lg  min-h-[150px]",
         "bg-gray-50 dark:bg-gray-900 text-black dark:text-white",
         "flex flex-col space-y-3"
       )}
@@ -71,7 +62,7 @@ export default function BoardItem({
             key={todo.id}
             position={todo.position}
             title={todo.title}
-            description={todo.description}
+            description={todo.description ?? ""}
             completed={todo.completed}
             xpReward={todo.xpReward}
             onEdit={() => onEditTodo(todo.id)}
