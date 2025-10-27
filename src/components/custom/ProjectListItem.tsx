@@ -53,7 +53,8 @@ const ProjectListItem: React.FC<ProjectListItemProps> = ({
         {isEditing ? (
           <Input
             value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
+            onChange={(e) =>  {
+    e.stopPropagation(); setNewTitle(e.target.value)}}
             className="w-full text-lg font-medium text-gray-900 dark:text-gray-100"
             autoFocus
           />
@@ -71,7 +72,9 @@ const ProjectListItem: React.FC<ProjectListItemProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={handleSave}
+              onClick={(e)=> {
+    e.stopPropagation()
+    handleSave()}}
               className="border-green-400 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
             >
               <CheckIcon className="w-5 h-5" />
@@ -79,7 +82,9 @@ const ProjectListItem: React.FC<ProjectListItemProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={handleCancel}
+              onClick={(e)=> {
+    e.stopPropagation(); 
+    handleCancel()}}
               className="border-gray-400 text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               <XIcon className="w-5 h-5" />
@@ -90,7 +95,10 @@ const ProjectListItem: React.FC<ProjectListItemProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setIsEditing(true)}
+              onClick={(e) => {
+    e.stopPropagation(); 
+     setIsEditing(true)
+              }}
               className={cn(
                 "border-gray-300 cursor-pointer text-gray-700 hover:border-gray-400 hover:text-gray-500",
                 "dark:border-gray-600 dark:text-gray-200 dark:hover:border-gray-600 dark:hover:text-gray-400"
@@ -101,7 +109,9 @@ const ProjectListItem: React.FC<ProjectListItemProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onDelete(projectId)}
+              onClick={(e) => {
+    e.stopPropagation();
+     onDelete(projectId)}}
               className={cn(
                 "border-gray-300 cursor-poin text-gray-700 hover:border-red-400 hover:text-red-500",
                 "dark:border-gray-600 dark:text-gray-200 dark:hover:border-red-600 dark:hover:text-red-400"

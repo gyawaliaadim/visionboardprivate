@@ -3,30 +3,42 @@
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { PencilIcon, TrashIcon } from "lucide-react"; // or your preferred SVG icon
+import { useState } from "react";
+import TodoForm from "./TodoForm";
+import { Board } from "@/types/models";
 
 interface TodoItemProps {
-  position: number;
+  todoId: string;
+  boardId: string;
+  
+  todoIndex: number;
   title: string;
   description?: string;
   completed: boolean;
-  onEdit: () => void;
-  onDelete: () => void;
   xpReward: number;
-  onToggleComplete: () => void;
+  boardIndex:number
+  boards:Board[]
 }
 
+
 export default function TodoItem({
-  position,
+  todoId,
+  boardId,
+  todoIndex,
   title,
   description,
   completed,
-  onEdit,
-  onDelete,
   xpReward,
-  onToggleComplete,
+  boardIndex,
+  boards
 }: TodoItemProps) {
+  const [editing, setEditing] = useState(false);
+
   return (
+    <>
+    {!editing?(
     <div
+    
       className={clsx(
         "w-[300px] p-4 rounded-lg shadow-lg",
         "bg-white text-black dark:bg-black dark:text-white",
@@ -37,20 +49,20 @@ export default function TodoItem({
       <div className="flex justify-between items-center">
         {/* Position cube */}
         <div className="flex-shrink-0 w-8 h-8 bg-gray-300 dark:bg-gray-700 text-black dark:text-white flex items-center justify-center font-bold rounded">
-          {position}
+          {todoIndex}
         </div>
 
         {/* Actions: Edit, Delete, XP/Complete */}
         <div className="flex items-center space-x-2">
-          <Button size="icon-sm" variant="outline" onClick={onEdit}>
+          <Button size="icon-sm" variant="outline" onClick={()=>setEditing(true)}>
             <PencilIcon className="w-4 h-4" />
           </Button>
-          <Button size="icon-sm" variant="destructive" onClick={onDelete}>
+          <Button size="icon-sm" variant="destructive" onClick={()=>console.log("delete")}>
             <TrashIcon className="w-4 h-4" />
           </Button>
           <Button
             size="icon-sm"
-            onClick={onToggleComplete}
+            onClick={()=>console.log("edit")}
             className={clsx(
               "bg-gradient-to-r from-[#374893] to-[#a94a79] text-white",
               "hover:scale-110 focus:shadow-[0_0_30px_rgba(200,110,180,0.9)] hover:shadow-[0_0_30px_rgba(200,110,180,0.9)]",
@@ -72,6 +84,24 @@ export default function TodoItem({
           {description}
         </div>
       )}
-    </div>
-  );
+    </div>):
+    (
+     <TodoForm
+      todoId={todoId}
+      title={title}
+      description={description}
+      boardIndex={boardIndex}
+      todoIndex={todoIndex}
+      xpReward={xpReward}
+      boardId={boardId}
+     boards={boards}
+      onCancel={()=>setEditing(false)}
+     />
+    )
+       }
+    </>
+   
+    
+  
+  )
 }

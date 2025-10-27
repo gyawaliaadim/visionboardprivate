@@ -4,86 +4,100 @@ import axios from "axios";
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useNavigation } from "@/store/NavigationContext";
-import BoardItem from "@/components/custom/BoardItem"; // adjust path if needed
+import BoardItem from "@/components/custom/BoardItem";
 import { Board } from "@/types/models";
-import { Button } from "@/components/ui/button";
-import { PencilIcon } from "lucide-react";
-import { TrashIcon } from "lucide-react";
+import ProjectHeader from "@/components/custom/ProjectHeader"; // <— imported here
+import { Project } from "@/types/models";
 const ProjectPage = ({ params }: { params: Promise<{ projectId: string }> }) => {
   const { projectId } = React.use(params);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const { navigate } = useNavigation();
 
   const fetchProjectById = async () => {
     if (!session?.user?.id) return null;
 
     try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API}/projects/projectDetails`,
-        { params: { projectId, userId: session.user.id } }
-      );
-      // check ownership
-      console.log(res.data.success)
-      if (res.data.success) {
-        return res.data.data;
-      } else {
-        // navigate("/dashboard");
-        return null;
-      }
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API}/projects/projectDetails`, {
+        params: { projectId, userId: session.user.id },
+      });
+      if (res.data.success) return res.data.data;
+      return null;
     } catch {
       navigate("/dashboard");
       return null;
     }
   };
 
-  const { data: project, isLoading, error } = useQuery({
+  const { data: project, isLoading, error, refetch } = useQuery({
     queryKey: ["project", projectId],
     queryFn: fetchProjectById,
     enabled: !!projectId && !!session?.user.id,
   });
 
-  console.log(project)
+  if (isLoading) return <div className="p-10 text-lg">Loading project...</div>;
   if (error || !project) return <div>Project not found or unauthorized</div>;
 
+  // handlers for project title edit/delete
+  const handleEditProjectTitle = async (newTitle: string) => {
+    try {
+      await axios.put(`${process.env.NEXT_PUBLIC_API}/projects/projectDetails`, {
+        id:projectId,
+        title: newTitle,
+      });
+      refetch();
+    } catch {
+      navigate("/dashboard")
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    try {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API}/projects/projectDetails`, {
+       data: { id: projectId },
+      });
+      refetch()
+      navigate("/dashboard");
+    } catch {
+     navigate("/dashboard")
+    }
+  };
+
+  // handlers for boards/todos
   const handleEditBoard = (boardId: string) => console.log("Edit board", boardId);
   const handleDeleteBoard = (boardId: string) => console.log("Delete board", boardId);
   const handleEditTodo = (todoId: string) => console.log("Edit todo", todoId);
   const handleDeleteTodo = (todoId: string) => console.log("Delete todo", todoId);
-  const handleToggleCompleteTodo = (todoId: string) =>
-    console.log("Toggle complete", todoId);
+  const handleToggleCompleteTodo = (todoId: string) => console.log("Toggle complete", todoId);
 
   return (
-    <div className="w-full flex  flex-col">
-      <div className="pt-5 pl-10 pr-10 text-2xl font-bold mb-4 flex w-full justify-between">
-        <div>
-
-          <h1 >{project.title}</h1>
-          <p className="mb-6">Project ID: {projectId}</p>
-
-        </div>
-        <div className="flex space-x-2">
-          <Button size="icon-sm" variant="outline" onClick={() => console.log("edit")}>
-            <PencilIcon className="w-4 h-4" />
-          </Button>
-          <Button size="icon-sm" variant="destructive" onClick={() => console.log("delete")}>
-            <TrashIcon className="w-4 h-4" />
-          </Button>
-        </div>
+    <div className="w-full flex flex-col">
+      {/* Integrated Header */}
+      <div className="pt-5 pl-10 pr-10 mb-4">
+        <ProjectHeader
+          title={project.title}
+          onEdit={handleEditProjectTitle}
+          onDelete={handleDeleteProject}
+        />
       </div>
 
-
+      {/* Boards */}
       <div className="pl-10 pr-10 mt-2 flex overflow-x-auto gap-4">
-        {project.boards.map((board: Board, index: number) => (
+     
+        {project.boards.sort((a:Board,b:Board)=>a.position-b.position).map((board: Board, index: number) => (
           <BoardItem
-            key={board.id}
-            title={board.title}
-            position={index + 1}
-            todos={board.todos}
+          key={board.id}
+          boardId={board.id}
+          title={board.title}
+          // position={index + 1}
+          boardIndex={index+1}
+          todos={board.todos}
+            boards={project.boards}
             onEditBoard={() => handleEditBoard(board.id)}
             onDeleteBoard={() => handleDeleteBoard(board.id)}
             onEditTodo={handleEditTodo}
             onDeleteTodo={handleDeleteTodo}
             onToggleCompleteTodo={handleToggleCompleteTodo}
+            
           />
         ))}
       </div>

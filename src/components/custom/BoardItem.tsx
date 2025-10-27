@@ -4,27 +4,28 @@ import clsx from "clsx";
 import TodoItem from "./TodoItem";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import { Todo } from "@/types/models";
+import { Board, Todo } from "@/types/models";
 interface BoardItemProps {
   title: string;
-  position: number;
   todos: Todo[];
+  boards: Board[];
   onEditBoard: () => void;
   onDeleteBoard: () => void;
   onEditTodo: (todoId: string) => void;
   onDeleteTodo: (todoId: string) => void;
   onToggleCompleteTodo: (todoId: string) => void;
+  boardIndex: number;
+  boardId:string;
 }
 
 export default function BoardItem({
   title,
-  position,
   todos,
+  boards,
   onEditBoard,
   onDeleteBoard,
-  onEditTodo,
-  onDeleteTodo,
-  onToggleCompleteTodo,
+  boardIndex,
+  boardId
 }: BoardItemProps) {
   return (
     <div
@@ -38,7 +39,7 @@ export default function BoardItem({
       <div className="flex justify-between items-center">
         {/* Left: Position cube */}
         <div className="w-8 h-8 flex items-center justify-center bg-gray-300 dark:bg-gray-700 font-bold rounded">
-          {position}
+          {boardIndex}
         </div>
 
         {/* Right: Board actions */}
@@ -57,17 +58,19 @@ export default function BoardItem({
 
       {/* Todos */}
       <div className="flex flex-col space-y-2">
-        {todos.map((todo) => (
+        {todos.sort((a,b)=>a.position-b.position).map((todo, index) => (
           <TodoItem
+          boardId={boardId}
+          todoId={todo.id}
+          boardIndex={boardIndex}
             key={todo.id}
-            position={todo.position}
+            todoIndex={index+1}
             title={todo.title}
             description={todo.description ?? ""}
             completed={todo.completed}
             xpReward={todo.xpReward}
-            onEdit={() => onEditTodo(todo.id)}
-            onDelete={() => onDeleteTodo(todo.id)}
-            onToggleComplete={() => onToggleCompleteTodo(todo.id)}
+            boards={boards}
+
           />
         ))}
       </div>

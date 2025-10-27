@@ -11,47 +11,36 @@ import { Select } from "@/components/ui/select";
 import { SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Board, Todo } from "@/types/models";
 import clsx from "clsx";
-
+interface TodoFormProps {
+  title?:string;
+  description?:string;
+  boardIndex:number;
+  boardId:string;
+  todoIndex:number;
+  todoId?: string;
+  boards: Board[];
+  xpReward?:number;
+  onCancel: ()=>void;
+}
 
 export default function TodoForm(
-  // { boards, onCancel, onSubmit }
+  { title,
+    description,
+    boardId,
+    todoIndex,
+    todoId,
+    boards, 
+    xpReward,
+    onCancel,
+      }:TodoFormProps
   // : TodoFormProps
 
 ) {
-  const boards: Board[] = [
-    {
-      id: "board-1",
-      projectId: "proj-A",
-      title: "To Do",
-      position: 0,
-      todos: [
-        { id: "todo-1", boardId: "board-1", title: "Set up repo", description: "Initialize git, install dependencies", xpReward: 10, position: 0, completed: false },
-        { id: "todo-2", boardId: "board-1", title: "Design schema", description: "Prisma models & relations", xpReward: 20, position: 1, completed: false },
-      ],
-    },
-    {
-      id: "board-2",
-      projectId: "proj-A",
-      title: "In Progress",
-      position: 1,
-      todos: [
-        { id: "todo-3", boardId: "board-2", title: "Implement API endpoints", description: "CRUD for projects, boards, todos", xpReward: 30, position: 0, completed: false },
-      ],
-    },
-    {
-      id: "board-3",
-      projectId: "proj-A",
-      title: "Done",
-      position: 2,
-      todos: [
-        { id: "todo-4", boardId: "board-3", title: "Create landing page", description: "", xpReward: 5, position: 0, completed: true },
-      ],
-    },
-  ];
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  
+  const { register, handleSubmit, formState: { errors }, getValues } = useForm({
     resolver: zodResolver(todoSchema),
-    defaultValues: { boardId: "", position: 0, xpReward: 0, title: "", description: "" },
+    defaultValues: { boardId: boardId?? "", position: todoIndex?? 0, xpReward: xpReward?? 0, title:title?? "", description: description??"" },
   });
 
   const submit = (data:any) => {
@@ -89,31 +78,34 @@ export default function TodoForm(
               <SelectValue placeholder="Select board" />
             </SelectTrigger>
             <SelectContent>
-              {boards.map((b: any) => (
+              {boards.sort((a,b)=>a.position-b.position).map((b: any, index:number) => (
                 <SelectItem key={b.id} value={b.id}>
-                  {b.name}
+                  {index+1}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           {errors.boardId && <p className="text-red-500 text-sm">{errors.boardId.message}</p>}
         </div>
-
+              
         {/* Position */}
         <div className="flex-1 w-[37.5%]">
           <Label htmlFor="position">Position</Label>
-          <Select {...register("position")}>
+          <Select {...register("position")}
+          disabled={getValues("boardId")===""}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="eg. 1,5" />
             </SelectTrigger>
             <SelectContent>
-              {boards.map((boardItem: Board) =>
-                boardItem.todos.map((todoItem: Todo) => (
-                  <SelectItem key={todoItem.id} value={todoItem.id}>
-                    {todoItem.position}
-                  </SelectItem>
-                ))
-              )}
+{boards
+  .find((board) => board.id === getValues("boardId"))
+  ?.todos.map((todoItem: Todo) => (
+    <SelectItem key={todoItem.id} value={todoItem.id}>
+      {todoItem.position}
+    </SelectItem>
+  ))
+}
 
             </SelectContent>
           </Select>
@@ -140,11 +132,16 @@ export default function TodoForm(
 
       {/* Buttons */}
       <div className="flex justify-end space-x-2">
-        <Button type="button" variant="outline" className="cursor-pointer" onClick={() => console.log("cancled")}>
+        <Button type="button" variant="outline" className="cursor-pointer" onClick={() => onCancel()}>
           Cancel
         </Button>
-        <Button type="submit" className="cursor-pointer bg-red-600 hover:bg-red-700 text-white">
-          Add Todo
+        <Button type="submit" className="cursor-pointer bg-red-600 hover:bg-red-700 text-white"
+
+        >
+          {
+            !todoId ? <>Add Todo</>:
+            <>Save Todo</>
+          }
         </Button>
       </div>
     </form>
