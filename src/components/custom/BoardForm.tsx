@@ -17,12 +17,12 @@ const boardSchema = z.object({
 type BoardFormValues = z.infer<typeof boardSchema>;
 
 interface BoardFormProps {
-  maxPosition?: number;
-  onCancel: () => void;
-  onSubmit: (data: BoardFormValues) => void;
 }
 
-export default function BoardForm({ maxPosition = 0, onCancel, onSubmit }: BoardFormProps) {
+export default function BoardForm({
+  
+ }
+  : BoardFormProps) {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<BoardFormValues>({
     resolver: zodResolver(boardSchema),
     defaultValues: { title: "", position: 0 },
