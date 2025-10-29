@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const projectId = searchParams.get("projectId");
   const userId = searchParams.get("userId");
-
+  console.log(projectId, userId)
   if (!projectId) {
     return createError("Project ID is required", 400);
   }

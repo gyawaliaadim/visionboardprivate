@@ -14,11 +14,11 @@ const ProjectPage = ({ params }: { params: Promise<{ projectId: string }> }) => 
   const { navigate } = useNavigation();
 
   const fetchProjectById = async () => {
-    if (!session?.user?.id) return null;
+    console.log(projectId)
 
     try {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API}/projects/projectDetails`, {
-        params: { projectId, userId: session.user.id },
+        params: { projectId:projectId, userId: session?.user.id },
       });
       if (res.data.success) return res.data.data;
       return null;
@@ -31,7 +31,7 @@ const ProjectPage = ({ params }: { params: Promise<{ projectId: string }> }) => 
   const { data: project, isLoading, error, refetch } = useQuery({
     queryKey: ["project", projectId],
     queryFn: fetchProjectById,
-    enabled: !!projectId && !!session?.user.id,
+    enabled: !!session?.user.id,
   });
 
   if (isLoading) return <div className="p-10 text-lg">Loading project...</div>;
