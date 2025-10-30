@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import clsx from "clsx";
+import { Board } from "@/types/models";
 
 const boardSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -17,22 +18,39 @@ const boardSchema = z.object({
 type BoardFormValues = z.infer<typeof boardSchema>;
 
 interface BoardFormProps {
+  boardIndex:number;
+  onCancel:()=>void;
+  boardsList:Board[];
+  TodoList:React.FC;
+  boardTitle?:string;
+  boardId?:string;
+  boardStyles:string;
 }
 
 export default function BoardForm({
-  
- }
+  boardIndex,
+  onCancel,
+  boardsList,
+  TodoList,
+  boardTitle,
+  boardId,
+  boardStyles
+}
   : BoardFormProps) {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<BoardFormValues>({
     resolver: zodResolver(boardSchema),
-    defaultValues: { title: "", position: 0 },
+    defaultValues: { title: boardTitle ?? "", position: boardIndex ?? 0 },
   });
 
   const submit = (data: BoardFormValues) => {
-    onSubmit(data);
+    // onSubmit(data);
   };
 
   return (
+    <div
+          className={boardStyles}
+    >
+
     <form
       onSubmit={handleSubmit(submit)}
       className={clsx(
@@ -57,25 +75,33 @@ export default function BoardForm({
               <SelectValue placeholder="Select position" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: maxPosition + 2 }).map((_, idx) => (
+              {/* {Array.from({ length: maxPosition + 2 }).map((_, idx) => (
                 <SelectItem key={idx} value={idx.toString()}>
                   {idx}
                 </SelectItem>
+              ))} */}
+              {boardsList.map((board:Board,index:number)=>(
+                 <SelectItem key={index} value={index.toString()}>
+                  {index}
+                </SelectItem>
               ))}
+              
             </SelectContent>
           </Select>
+           {errors.position && <p className="text-red-500 text-sm">{errors.position.message}</p>}
         </div>
 
         {/* Cancel */}
-        <Button type="button" variant="outline" onClick={onCancel} className="mt-6 cursor-pointer">
+        <Button type="button" variant="outline" onClick={()=>onCancel()} className="mt-6 cursor-pointer">
           Cancel
         </Button>
 
         {/* Add Board */}
         <Button type="submit" className="cursor-pointer bg-green-600 hover:bg-green-700 text-white mt-6">
-          Add Board
+          {boardId ? <>Add Board</> : <>Save Board</>}
         </Button>
       </div>
     </form>
+      </div>
   );
 }

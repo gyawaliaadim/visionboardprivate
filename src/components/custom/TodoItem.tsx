@@ -4,39 +4,27 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { PencilIcon, TrashIcon } from "lucide-react"; // or your preferred SVG icon
 import { useState } from "react";
-import TodoForm from "./TodoForm";
-import { Board } from "@/types/models";
 
 interface TodoItemProps {
-  todoId: string;
-  boardId: string;
-  
   todoIndex: number;
-  title: string;
-  description?: string;
-  completed: boolean;
+  todoTitle: string;
+  todoDescription: string;
   xpReward: number;
-  boardIndex:number
-  boards:Board[]
+  handleEdit:()=>void;
 }
 
 
 export default function TodoItem({
-  todoId,
-  boardId,
+
   todoIndex,
-  title,
-  description,
-  completed,
+  todoTitle,
+  todoDescription,
   xpReward,
-  boardIndex,
-  boards
+  handleEdit
 }: TodoItemProps) {
-  const [editing, setEditing] = useState(false);
 
   return (
     <>
-    {!editing?(
     <div
     
       className={clsx(
@@ -48,13 +36,13 @@ export default function TodoItem({
       {/* Row 1: Position left, actions right */}
       <div className="flex justify-between items-center">
         {/* Position cube */}
-        <div className="flex-shrink-0 w-8 h-8 bg-gray-300 dark:bg-gray-700 text-black dark:text-white flex items-center justify-center font-bold rounded">
+        <div className="shrink-0 w-8 h-8 bg-gray-300 dark:bg-gray-700 text-black dark:text-white flex items-center justify-center font-bold rounded">
           {todoIndex}
         </div>
 
         {/* Actions: Edit, Delete, XP/Complete */}
         <div className="flex items-center space-x-2">
-          <Button size="icon-sm" variant="outline" onClick={()=>setEditing(true)}>
+          <Button size="icon-sm" variant="outline" onClick={()=>handleEdit()}>
             <PencilIcon className="w-4 h-4" />
           </Button>
           <Button size="icon-sm" variant="destructive" onClick={()=>console.log("delete")}>
@@ -64,41 +52,27 @@ export default function TodoItem({
             size="icon-sm"
             onClick={()=>console.log("edit")}
             className={clsx(
-              "bg-gradient-to-r from-[#374893] to-[#a94a79] text-white",
+              "bg-linear-to-r from-[#374893] to-[#a94a79] text-white",
               "hover:scale-110 focus:shadow-[0_0_30px_rgba(200,110,180,0.9)] hover:shadow-[0_0_30px_rgba(200,110,180,0.9)]",
               "focus:brightness-110 hover:brightness-110",
               "transition-all duration-200 ease-out rounded cursor-pointer"
             )}
           >
-            {completed ? "Completed" : `${xpReward}`}
+            {xpReward}
           </Button>
         </div>
       </div>
 
-      {/* Row 2: Title */}
-      <div className="font-semibold break-words">{title}</div>
+      {/* Row 2: todoTitle */}
+      <div className="font-semibold wrap-break-word">{todoTitle}</div>
 
-      {/* Row 3: Description */}
-      {description && (
-        <div className="text-sm text-gray-700 dark:text-gray-300 break-words">
-          {description}
+      {/* Row 3: todoDescription */}
+      {todoDescription && (
+        <div className="text-sm text-gray-700 dark:text-gray-300 wrap-break-word">
+          {todoDescription}
         </div>
       )}
-    </div>):
-    (
-     <TodoForm
-      todoId={todoId}
-      title={title}
-      description={description}
-      boardIndex={boardIndex}
-      todoIndex={todoIndex}
-      xpReward={xpReward}
-      boardId={boardId}
-     boards={boards}
-      onCancel={()=>setEditing(false)}
-     />
-    )
-       }
+    </div>
     </>
    
     

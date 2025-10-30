@@ -1,8 +1,8 @@
 "use client";
 
+import * as z from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { todoSchema } from "@/schema/schemas";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,27 +11,39 @@ import { Select } from "@/components/ui/select";
 import { SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Board, Todo } from "@/types/models";
 import clsx from "clsx";
+
+const todoSchema= z.object({
+  boardId: z.string().min(1, "Board is required"),
+  todoIndex: z.number().min(0, "Position must be ≥ 0"),
+  xpReward: z.number().min(0, "XP Reward must be ≥ 0"),
+  todoTitle:z.string().min(1, "Title is required"),
+  todoDescription: z.string().optional(),
+});
+
 interface TodoFormProps {
-  title?:string;
-  description?:string;
+  todoTitle?:string;
+  todoDescription?:string;
+  todoId?: string;
+  xpReward?:number;
+  todoIndex:number;
+todosList?:Todo[];
   boardIndex:number;
   boardId:string;
-  todoIndex:number;
-  todoId?: string;
-  boards: Board[];
-  xpReward?:number;
+  boardsList: Board[];
+
   onCancel: ()=>void;
 }
 
 export default function TodoForm(
-  { title,
-    description,
-    boardId,
-    todoIndex,
+  { todoTitle,
+    todoDescription,
     todoId,
-    boards, 
+    todoIndex,
+    boardId,
+    boardsList, 
     xpReward,
     onCancel,
+    todosList
       }:TodoFormProps
   // : TodoFormProps
 
@@ -40,7 +52,7 @@ export default function TodoForm(
   
   const { register, handleSubmit, formState: { errors }, getValues } = useForm({
     resolver: zodResolver(todoSchema),
-    defaultValues: { boardId: boardId?? "", position: todoIndex?? 0, xpReward: xpReward?? 0, title:title?? "", description: description??"" },
+    defaultValues: { boardId: boardId ?? "", todoIndex: todoIndex ?? 0, xpReward: xpReward?? 0, todoTitle:todoTitle?? "", todoDescription: todoDescription??"" },
   });
 
   const submit = (data:any) => {
@@ -58,14 +70,14 @@ export default function TodoForm(
       {/* Title */}
       <div className="mb-4">
         <Label htmlFor="title">Title</Label>
-        <Input id="title" {...register("title")} />
-        {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+        <Input id="title" {...register("todoTitle")} />
+        {errors.todoTitle && <p className="text-red-500 text-sm">{errors.todoTitle.message}</p>}
       </div>
 
       {/* Description */}
       <div className="mb-4">
         <Label htmlFor="description">Description</Label>
-        <Textarea id="description" {...register("description")} rows={3} />
+        <Textarea id="description" {...register("todoDescription")} rows={3} />
       </div>
 
       {/* Row of three controls */}
@@ -78,7 +90,7 @@ export default function TodoForm(
               <SelectValue placeholder="Select board" />
             </SelectTrigger>
             <SelectContent>
-              {boards.sort((a,b)=>a.position-b.position).map((b: any, index:number) => (
+              {boardsList.map((b: any, index:number) => (
                 <SelectItem key={b.id} value={b.id}>
                   {index+1}
                 </SelectItem>
@@ -90,25 +102,26 @@ export default function TodoForm(
               
         {/* Position */}
         <div className="flex-1 w-[37.5%]">
-          <Label htmlFor="position">Position</Label>
-          <Select {...register("position")}
+          <Label htmlFor="todoIndex">Position</Label>
+          <Select {...register("todoIndex")}
           disabled={getValues("boardId")===""}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="eg. 1,5" />
             </SelectTrigger>
             <SelectContent>
-{boards
-  .find((board) => board.id === getValues("boardId"))
-  ?.todos.map((todoItem: Todo) => (
-    <SelectItem key={todoItem.id} value={todoItem.id}>
-      {todoItem.position}
+
+{todosList?.map((todoItem: Todo, index) => (
+    <SelectItem key={todoItem.id} value={String(index)}>
+      {index}
     </SelectItem>
   ))
 }
 
             </SelectContent>
           </Select>
+          
+  {errors.todoIndex && <p className="text-red-500 text-sm">{errors.todoIndex.message}</p> }
         </div>
 
         {/* XP Reward */}

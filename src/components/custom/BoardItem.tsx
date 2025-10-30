@@ -4,38 +4,34 @@ import clsx from "clsx";
 import TodoItem from "./TodoItem";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import { Board, Todo } from "@/types/models";
-import { ReactNode } from "react";
 interface BoardItemProps {
-  boardTitle:string;
-  boardPosition:number;
-  TodoList:React.FC ;
-  boards:Board[];
-  handleEdit:()=>void
+  boardTitle?:string;
+  TodoList:React.FC;
+  handleEdit:()=>void;
+  boardIndex:number;
+  boardStyles:string
 }
+import React from 'react'
 
-export default function BoardItem({
+
+const BoardItem = ({
 boardTitle,
-boardPosition,
 TodoList,
-boards,
-handleEdit
-
-}: BoardItemProps) {
+handleEdit,
+boardIndex,
+boardStyles
+}: BoardItemProps)=> {
   const handleDeleteBoard = ()=>{}
   return (
     <div
-      className={clsx(
-        "w-[320px] p-4 rounded-xl shadow-lg  min-h-[150px] flex-wrap",
-        "bg-gray-50 dark:bg-gray-900 text-black dark:text-white",
-        "flex flex-col space-y-3"
-      )}
+      className={boardStyles}
     >
+      <div>
       {/* Board Header */}
       <div className="flex justify-between items-center">
         {/* Left: Position cube */}
         <div className="w-8 h-8 flex items-center justify-center bg-gray-300 dark:bg-gray-700 font-bold rounded">
-          {boardPosition}
+          {boardIndex}
         </div>
 
         {/* Right: Board actions */}
@@ -52,8 +48,11 @@ handleEdit
       {/* Second row: Board title */}
       <h2 className="font-bold text-lg wrap-break-word">{boardTitle}</h2>
 
+        </div>
       <TodoList/>
    
     </div>
   );
 }
+
+export default BoardItem
