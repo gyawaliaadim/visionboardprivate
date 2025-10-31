@@ -1,6 +1,6 @@
 // lib/utils/response.ts
 import { NextResponse } from 'next/server';
-import { Board } from '@/types/models';
+import { Board, Todo } from '@/types/models';
 export function createResponse(message: string, data: any = null, status: number) {
   return NextResponse.json(
     { success: true, message, data },
@@ -16,10 +16,11 @@ export function createError(message: string, status: number) {
 }
 
 export function calculateNewPosition(
-  boards: Board[],
-  fromIndex: number,
-  toIndex: number
+  boards: Board[]|Todo[]|undefined,
+  toIndex: number,
+  fromIndex?: number,
 ): number {
+  if (boards===undefined)return 0;
   // If position not changed, return current position
   if (fromIndex === toIndex) return boards[fromIndex].position;
 
@@ -32,14 +33,7 @@ export function calculateNewPosition(
   if (toIndex === boards.length - 1) {
     return boards[boards.length - 1].position + 1000;
   }
-  if (fromIndex === 0){
 
-    // Moving somewhere in between
-    const prev = boards[toIndex];
-    const next = boards[toIndex+1];
-    
-    return (prev.position + next.position) / 2;
-  }
       const prev = boards[toIndex];
     const next = boards[toIndex+1];
     
