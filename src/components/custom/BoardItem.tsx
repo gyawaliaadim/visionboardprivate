@@ -1,7 +1,6 @@
 "use client";
 
-import clsx from "clsx";
-import TodoItem from "./TodoItem";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
 interface BoardItemProps {
@@ -9,9 +8,11 @@ interface BoardItemProps {
   TodoList:React.FC;
   handleEdit:()=>void;
   boardIndex:number;
-  boardStyles:string
+  boardStyles:string;
+  boardId?:string
 }
 import React from 'react'
+import axios from "axios";
 
 
 const BoardItem = ({
@@ -19,9 +20,25 @@ boardTitle,
 TodoList,
 handleEdit,
 boardIndex,
-boardStyles
+boardStyles,
+boardId
 }: BoardItemProps)=> {
-  const handleDeleteBoard = ()=>{}
+  
+const queryClient = useQueryClient();
+  const handleDeleteBoard = async()=>{
+    let userChoice = confirm("Are you sure you want to proceed?");
+    if (userChoice){
+const res = await axios.delete(
+  `${process.env.NEXT_PUBLIC_API}/boardDetails`,
+  { data: { id: boardId } }
+  
+)
+  if (res.data.success){
+     queryClient.invalidateQueries();
+  }
+}
+
+  }
   return (
     <div
       className={boardStyles}
@@ -31,12 +48,12 @@ boardStyles
       <div className="flex justify-between items-center">
         {/* Left: Position cube */}
         <div className="w-8 h-8 flex items-center justify-center bg-gray-300 dark:bg-gray-700 font-bold rounded">
-          {boardIndex}
+          {boardIndex+1}
         </div>
 
         {/* Right: Board actions */}
         <div className="flex space-x-2">
-          <Button size="icon-sm" variant="outline" onClick={()=>handleEdit}>
+          <Button size="icon-sm" variant="outline" onClick={()=>handleEdit()}>
             <PencilIcon className="w-4 h-4" />
           </Button>
           <Button size="icon-sm" variant="destructive" onClick={()=>handleDeleteBoard()}>
@@ -49,6 +66,7 @@ boardStyles
       <h2 className="font-bold text-lg wrap-break-word">{boardTitle}</h2>
 
         </div>
+        
       <TodoList/>
    
     </div>

@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { PencilIcon, TrashIcon } from "lucide-react"; // or your preferred SVG icon
 import { useState } from "react";
-
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 interface TodoItemProps {
   todoIndex: number;
   todoTitle: string;
   todoDescription: string;
   xpReward: number;
   handleEdit:()=>void;
+  todoId?:string;
 }
 
 
@@ -20,9 +22,24 @@ export default function TodoItem({
   todoTitle,
   todoDescription,
   xpReward,
-  handleEdit
+  handleEdit,
+  todoId
 }: TodoItemProps) {
+const queryClient = useQueryClient();
+  const handleDeleteTodo = async()=>{
+    let userChoice = confirm("Are you sure you want to proceed?");
+    if (userChoice){
+const res = await axios.delete(
+  `${process.env.NEXT_PUBLIC_API}/todoDetails`,
+  { data: { id: todoId } }
+  
+)
+  if (res.data.success){
+     queryClient.invalidateQueries();
+  }
+}
 
+  }
   return (
     <>
     <div
@@ -37,7 +54,7 @@ export default function TodoItem({
       <div className="flex justify-between items-center">
         {/* Position cube */}
         <div className="shrink-0 w-8 h-8 bg-gray-300 dark:bg-gray-700 text-black dark:text-white flex items-center justify-center font-bold rounded">
-          {todoIndex}
+          {todoIndex+1}
         </div>
 
         {/* Actions: Edit, Delete, XP/Complete */}
@@ -45,7 +62,7 @@ export default function TodoItem({
           <Button size="icon-sm" variant="outline" onClick={()=>handleEdit()}>
             <PencilIcon className="w-4 h-4" />
           </Button>
-          <Button size="icon-sm" variant="destructive" onClick={()=>console.log("delete")}>
+          <Button size="icon-sm" variant="destructive" onClick={()=>handleDeleteTodo()}>
             <TrashIcon className="w-4 h-4" />
           </Button>
           <Button

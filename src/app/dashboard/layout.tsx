@@ -12,7 +12,7 @@ export default function Layout({
 }>) {
 
   return (
-    <div className="flex max-h-screen">
+    <div className="flex max-h-screen w-full">
 
       <Sidebar />
       <div className="overflow-y-auto flex w-full">

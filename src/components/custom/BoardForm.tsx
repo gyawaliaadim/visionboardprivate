@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import clsx from "clsx";
 import { Board } from "@/types/models";
-
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
+import { calculateNewPosition } from "@/app/lib/utils";
 const boardSchema = z.object({
   title: z.string().min(1, "Title is required"),
   position: z.number().min(0, "Position is required"),
@@ -39,12 +41,31 @@ export default function BoardForm({
   : BoardFormProps) {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<BoardFormValues>({
     resolver: zodResolver(boardSchema),
-    defaultValues: { title: boardTitle ?? "", position: boardIndex ?? 0 },
+    defaultValues: { title: boardTitle ?? "", position: 0 },
   });
+const queryClient = useQueryClient();
+const submit = async (data: BoardFormValues) => {
+  console.log(data)
+const newPos = calculateNewPosition(boardsList, boardIndex, data.position);
+console.log("New position:", newPos);
+console.log(boardIndex)
+console.log(data.position)
+console.log(boardsList[boardIndex])
+console.log(boardsList[data.position])
+  const res = await axios.put(
+    `${process.env.NEXT_PUBLIC_API}/boardDetails`,
+    {
+      id: boardId ?? "",
+      title: data.title,
+      position:newPos
+    }
+  );
+  if (res.data.success){
+     queryClient.invalidateQueries();
+  }
+  onCancel()
+};
 
-  const submit = (data: BoardFormValues) => {
-    // onSubmit(data);
-  };
 
   return (
     <div
@@ -53,10 +74,10 @@ export default function BoardForm({
 
     <form
       onSubmit={handleSubmit(submit)}
-      className={clsx(
-        "w-[350px] p-4 rounded-lg shadow-lg",
-        "bg-white text-black dark:bg-black dark:text-white"
-      )}
+      // className={clsx(
+      //   "w-[350px] p-4 rounded-lg shadow-lg",
+      //   "bg-white text-black dark:bg-black dark:text-white"
+      // )}
     >
       {/* Title */}
       <div className="mb-4">
@@ -68,9 +89,9 @@ export default function BoardForm({
       {/* Footer Row: Position + Cancel + Add */}
       <div className="flex items-center space-x-2">
         {/* Position */}
-        <div className="flex-1">
+        <div className="flex-1 ">
           <Label htmlFor="position">Position</Label>
-          <Select onValueChange={(value) => setValue("position", Number(value))} defaultValue="0">
+          <Select {...register("position")}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select position" />
             </SelectTrigger>
@@ -81,8 +102,8 @@ export default function BoardForm({
                 </SelectItem>
               ))} */}
               {boardsList.map((board:Board,index:number)=>(
-                 <SelectItem key={index} value={index.toString()}>
-                  {index}
+                 <SelectItem key={index} value={String(index)}>
+                  {index+1}
                 </SelectItem>
               ))}
               
@@ -98,10 +119,11 @@ export default function BoardForm({
 
         {/* Add Board */}
         <Button type="submit" className="cursor-pointer bg-green-600 hover:bg-green-700 text-white mt-6">
-          {boardId ? <>Add Board</> : <>Save Board</>}
+          {!boardId ? <>Add Board</> : <>Save Board</>}
         </Button>
       </div>
     </form>
+    <TodoList/>
       </div>
   );
 }

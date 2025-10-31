@@ -6,7 +6,7 @@ import { Board, Todo } from '@/types/models';
 interface TodoManagerProps{
    boardId:string ;
   boardIndex:number ;
-  boardList:Board[] ;
+  boardsList:Board[] ;
   todoIndex:number ;
   todoDescription?:string ;
   todoId?:string ;
@@ -17,7 +17,7 @@ interface TodoManagerProps{
 const TodoManager = ({
   boardId,
   boardIndex,
-  boardList,
+  boardsList,
   todoIndex,
   todoDescription,
   todoId,
@@ -33,7 +33,7 @@ const TodoManager = ({
         <TodoForm
         boardId={boardId}
         boardIndex={boardIndex}
-        boardsList={boardList}
+        boardsList={boardsList}
         onCancel={()=>setEditingTodo(false)}
         todoIndex={todoIndex}
         todoDescription={todoDescription}
@@ -48,6 +48,7 @@ const TodoManager = ({
         todoDescription={todoDescription??""}
         todoIndex={todoIndex}       
         xpReward={xpReward??0}
+        todoId={todoId}
         />
     }
     </>

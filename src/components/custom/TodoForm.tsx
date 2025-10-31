@@ -11,6 +11,8 @@ import { Select } from "@/components/ui/select";
 import { SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Board, Todo } from "@/types/models";
 import clsx from "clsx";
+import { useEffect, useState } from 'react';
+import { Value } from '@radix-ui/react-select';
 
 const todoSchema= z.object({
   boardId: z.string().min(1, "Board is required"),
@@ -48,12 +50,20 @@ export default function TodoForm(
   // : TodoFormProps
 
 ) {
-
-  
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm({
+  const [selectedBoard, setSelectedBoard] = useState<Board|undefined>()
+  const { register, handleSubmit, getValues, setValue, formState: { errors }, watch,  } = useForm({
     resolver: zodResolver(todoSchema),
     defaultValues: { boardId: boardId ?? "", todoIndex: todoIndex ?? 0, xpReward: xpReward?? 0, todoTitle:todoTitle?? "", todoDescription: todoDescription??"" },
   });
+  // const selectedBoard = boardsList.find(board => board.id === watch("boardId"));
+  const boardIdForm = watch("boardId")
+
+    useEffect(() => {
+    const boardFound= boardsList.find(board => board.id == boardIdForm)
+    setSelectedBoard(boardFound)
+    console.log(boardFound)
+  }, [boardIdForm])
+  
 
   const submit = (data:any) => {
     console.log(data)
@@ -91,7 +101,7 @@ export default function TodoForm(
             </SelectTrigger>
             <SelectContent>
               {boardsList.map((b: any, index:number) => (
-                <SelectItem key={b.id} value={b.id}>
+                <SelectItem key={b.id} value={b.id} onChange={()=>setValue("boardId", b.id)}>
                   {index+1}
                 </SelectItem>
               ))}
@@ -111,13 +121,11 @@ export default function TodoForm(
             </SelectTrigger>
             <SelectContent>
 
-{todosList?.map((todoItem: Todo, index) => (
-    <SelectItem key={todoItem.id} value={String(index)}>
-      {index}
-    </SelectItem>
-  ))
-}
-
+{selectedBoard?.todos?.map((todoItem: Todo, index: number) => (
+  <SelectItem key={todoItem.id} value={String(index)}>
+    {index + 1}
+  </SelectItem>
+))}
             </SelectContent>
           </Select>
           

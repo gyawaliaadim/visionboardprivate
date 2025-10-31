@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BoardForm from '@/components/custom/BoardForm'
 import BoardItem from '@/components/custom/BoardItem'
 import { Board, Todo } from '@/types/models';
@@ -21,17 +21,24 @@ const BoardManager =
   boardTitle
 }:BoardManagerProps) => {
     const [editingBoard, setEditingBoard] = useState<true|false>(false)
+    useEffect(() => {
+      console.log(boardsList)
+      }
+    , [todosList])
     
-    const TodoList =()=> (
+    const TodoList =()=> {
+      
+      return(
          <div className="flex flex-col space-y-2">
        {
-        todosList.map((todo:Todo,index:number)=>(
+        todosList.filter((todo)=>!todo.completed).map((todo:Todo,index:number)=>(
           (
 
             <TodoManager
+            key={index}
             boardId={boardId??""}
             boardIndex={boardIndex}
-            boardList={boardsList}
+            boardsList={boardsList}
             todoIndex={index}
             todosList={todosList}
             todoDescription={todo.description??""}
@@ -40,12 +47,13 @@ const BoardManager =
             xpReward={todo.xpReward}
             />
           )
+          
         ))
        }
-      </div>
-    )
+      </div>)
+    }
   const boardStyles =clsx(
-        "w-[320px] p-4 rounded-xl shadow-lg  min-h-[150px] flex-wrap",
+        "w-[350px] p-4 rounded-xl shadow-lg  ",
         "bg-gray-50 dark:bg-gray-900 text-black dark:text-white",
         "flex flex-col space-y-3"
       )
@@ -68,6 +76,7 @@ const BoardManager =
         boardTitle={boardTitle}
       TodoList={TodoList}
       boardStyles={boardStyles}
+      boardId={boardId}
         />
     }
     </>

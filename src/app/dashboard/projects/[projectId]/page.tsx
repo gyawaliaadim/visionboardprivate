@@ -1,5 +1,6 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import axios from "axios";
 import * as React from "react";
 import { useSession } from "next-auth/react";
@@ -8,6 +9,7 @@ import BoardItem from "@/components/custom/BoardItem";
 import { Board } from "@/types/models";
 import ProjectHeader from "@/components/custom/ProjectHeader"; // <— imported here
 import { Project } from "@/types/models";
+import BoardManager from "@/components/custom/BoardManager";
 const ProjectPage = ({ params }: { params: Promise<{ projectId: string }> }) => {
   const { projectId } = React.use(params);
   const { data: session } = useSession();
@@ -31,9 +33,10 @@ const ProjectPage = ({ params }: { params: Promise<{ projectId: string }> }) => 
   const { data: project, isLoading, error, refetch } = useQuery({
     queryKey: ["project", projectId],
     queryFn: fetchProjectById,
-    enabled: !!session?.user.id,
+    enabled: !!projectId && !!session?.user.id,
   });
 
+const queryClient = useQueryClient();
   if (isLoading) return <div className="p-10 text-lg">Loading project...</div>;
   if (error || !project) return <div>Project not found or unauthorized</div>;
 
@@ -61,7 +64,6 @@ const ProjectPage = ({ params }: { params: Promise<{ projectId: string }> }) => 
      navigate("/dashboard")
     }
   };
-
   // handlers for boards/todos
   const handleEditBoard = (boardId: string) => console.log("Edit board", boardId);
   const handleDeleteBoard = (boardId: string) => console.log("Delete board", boardId);
@@ -81,24 +83,32 @@ const ProjectPage = ({ params }: { params: Promise<{ projectId: string }> }) => 
       </div>
 
       {/* Boards */}
-      <div className="pl-10 pr-10 mt-2 flex overflow-x-auto gap-4">
+      <div className=" mt-2 flex overflow-x-auto gap-4 relative">
      
-        {project.boards.sort((a:Board,b:Board)=>a.position-b.position).map((board: Board, index: number) => (
-          <BoardItem
-          key={board.id}
+        {project.boards.map((board: Board, index: number) => (
+          <BoardManager
+          boardIndex={index}
+          boardsList={project.boards}
+          todosList={board.todos}
           boardId={board.id}
-          title={board.title}
-          // position={index + 1}
-          boardIndex={index+1}
-          todos={board.todos}
-            boards={project.boards}
-            onEditBoard={() => handleEditBoard(board.id)}
-            onDeleteBoard={() => handleDeleteBoard(board.id)}
-            onEditTodo={handleEditTodo}
-            onDeleteTodo={handleDeleteTodo}
-            onToggleCompleteTodo={handleToggleCompleteTodo}
-            
+          boardTitle={board.title}
+          key={index}
           />
+          // <BoardItem
+          // key={board.id}
+          // boardId={board.id}
+          // title={board.title}
+          // // position={index + 1}
+          // boardIndex={index+1}
+          // todos={board.todos}
+          //   boards={project.boards}
+          //   onEditBoard={() => handleEditBoard(board.id)}
+          //   onDeleteBoard={() => handleDeleteBoard(board.id)}
+          //   onEditTodo={handleEditTodo}
+          //   onDeleteTodo={handleDeleteTodo}
+          //   onToggleCompleteTodo={handleToggleCompleteTodo}
+            
+          // />
         ))}
       </div>
     </div>
